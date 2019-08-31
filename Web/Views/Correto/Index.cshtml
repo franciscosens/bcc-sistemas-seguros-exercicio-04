@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<div class="row">
+    <div class="col-6">
+
+        <h3>Lista de Arquivos</h3>
+
+        <form asp-action="index" method="get">
+            <div class="form-group">
+                <label for="filtro-caminho">Busca</label>
+                <input type="text" name="nome" id="filtro-caminho" class="form-control" value="@ViewBag.Nome" autofocus/>
+            </div>
+        </form>
+
+        <table class="table table-striped table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>Preview</th>
+                    <th>Nome</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Web.Models.ArquivoCorreto correto in ViewBag.Arquivos)
+                {
+
+                    <tr>
+                        <td>
+                            <img src="@System.IO.Path.Combine(ViewBag.Caminho, correto.NomeHash)" />
+                        </td>
+                        <td>@correto.NomeArquivo</td>
+                        <td>
+                            <a href="/correto/download?hash=@correto.NomeHash" target="_blank">Download</a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="col-6">
+
+        <h3>Upload de Arquivos</h3>
+
+        <form method="post" enctype="multipart/form-data" asp-controller="Correto" asp-action="Upload">
+
+            <div class="custom-file">
+                <input type="file" id="arquivo" name="arquivo" class="custom-file-input">
+                <label for="arquivo" class="custom-file-label">Arquivo</label>
+            </div>
+
+            <div class="mt-3">
+                <button class="btn btn-success float-right" type="submit">Enviar</button>
+            </div>
+        </form>
+
+    </div>
+
+</div>
