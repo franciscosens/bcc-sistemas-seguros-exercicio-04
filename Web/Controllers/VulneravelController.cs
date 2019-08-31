@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.Models;
@@ -12,11 +13,14 @@ namespace Web.Controllers
     [Route("vulneravel")]
     public class VulneravelController : Controller
     {
+        private readonly string _nomePasta;
         private readonly string _caminho;
 
-        public VulneravelController()
+        public VulneravelController(IHostingEnvironment env)
         {
-            _caminho = Path.Combine(Directory.GetCurrentDirectory(), "arquivos-vulneraveis");
+            string wwwroot = env.WebRootPath;
+            _nomePasta = "arquivos-vulneraveis";
+            _caminho = Path.Combine(wwwroot, _nomePasta);
 
             if (!Directory.Exists(_caminho))
             {
@@ -40,7 +44,7 @@ namespace Web.Controllers
                 });
             }
 
-            ViewBag.Caminho = _caminho;
+            ViewBag.Caminho = _nomePasta;
             ViewBag.Arquivos = arquivosVulneraveis;
             return View();
         }
@@ -62,7 +66,7 @@ namespace Web.Controllers
         public ActionResult Download(string nome)
         {
             string caminhoArquivo = Path.Combine(_caminho, nome);
-            if (System.IO.File.Exists(caminhoArquivo))
+            if (!System.IO.File.Exists(caminhoArquivo))
             {
                 return NotFound("Arquivo não existe");
             }

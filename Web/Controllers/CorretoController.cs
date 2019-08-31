@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Web.Repositories;
@@ -14,13 +15,17 @@ namespace Web.Controllers
     [Route("correto")]
     public class CorretoController : Controller
     {
+        private readonly string _nomePasta;
         private readonly string _caminho;
         private readonly IArquivoCorretoRepository _repository;
 
-        public CorretoController(IArquivoCorretoRepository repository)
+        public CorretoController(IArquivoCorretoRepository repository, IHostingEnvironment env)
         {
             _repository = repository;
-            _caminho = Path.Combine(Directory.GetCurrentDirectory(), "arquivos-corretos");
+
+            string wwwroot = env.WebRootPath;
+            _nomePasta = "arquivos-corretos";
+            _caminho = Path.Combine(wwwroot, _nomePasta);
 
             if (!Directory.Exists(_caminho))
             {
@@ -33,7 +38,7 @@ namespace Web.Controllers
             var arquivos = _repository.ObterTodos(nome);
 
             ViewBag.Nome = nome;
-            ViewBag.Caminho = _caminho;
+            ViewBag.Caminho = _nomePasta;
             ViewBag.Arquivos = arquivos;
             return View();
         }
