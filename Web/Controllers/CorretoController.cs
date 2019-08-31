@@ -68,13 +68,8 @@ namespace Web.Controllers
         {
             var arquivo = _repository.ObterPeloNomeHash(hash);
 
-            if(arquivo == null)
-            {
-                return NotFound();
-            }
-
             string caminhoArquivo = Path.Combine(_caminho, hash);
-            if (!System.IO.File.Exists(caminhoArquivo))
+            if(arquivo == null || !System.IO.File.Exists(caminhoArquivo))
             {
                 return NotFound("Arquivo não existe");
             }
